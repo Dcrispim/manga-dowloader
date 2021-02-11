@@ -92,7 +92,7 @@ def log_bar(value, min=0, max=100, lenBar=100, msg='', emptyChar='-', fullChar='
     return f"{msg}\n\n{fullBar}{emptyBar}"
 
 
-def download_images(name, cap, dirName=None, title=''):
+def download_images(name, cap, dirName=None, title='', percent=None):
     pages_link = get_manga_images_link(name, cap, 100)
 
     try:
@@ -102,11 +102,17 @@ def download_images(name, cap, dirName=None, title=''):
     except:
         pass
 
+    
     cmds = []
     for page in pages_link:
-        status = f"downloading {page.split('/')[-1].split('.')[0]}"
-        cmds.append(
-            f'''clear {"&& echo '"+title+"'" if title else ""} && wget {page} -P {dirName or f"{getNameCap(name,cap)}"}''')
+        
+        cmd = 'clear'
+        if percent:
+            cmd += f" && ./progressbarr.sh {int(percent*100)} '{title}'"
+        else:
+            cmd+=f" && ./progressbarr.sh 0 '{title}'"
+        cmd+= f' && wget {page} -P {dirName or f"{getNameCap(name,cap)}"}'
+        cmds.append(cmd)
     os.system('&&'.join(cmds))
 
 
@@ -148,13 +154,14 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
                 pass
             except Exception as err:
                 print(err)
-            download_images(name, cap, dirJPGcapname,f'{i}/{len(caps)-len(exclude)}')
+            download_images(name, cap, dirJPGcapname,namecap, i/(len(caps)-len(exclude)))
             fix_images_by_folder(dirJPGcapname)
             fit_images_by_folder(dirJPGcapname)
             sleep(2)
-            os.system('clear')
             convertFolder(dirJPGcapname, manganame, namecap)
             print(dirJPGcapname, '\n')
+        i+=1
+    os.system('clear')
     print(f'finish {name}')
 
 
