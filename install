@@ -1,0 +1,2 @@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+python3 -m venv $DIR/venv && $DIR/venv/bin/pip3 install -r $DIR/requirements.txt
