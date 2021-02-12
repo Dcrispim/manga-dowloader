@@ -3,6 +3,7 @@ from pdfconverter import convertFolder, fit_images_by_folder, fix_images_by_fold
 import cv2
 import getpass
 from time import sleep
+from datetime import datetime
 import requests
 
 args = os.sys.argv[1:]
@@ -128,7 +129,7 @@ def download_images(name, cap, dirName=None, title='', percent=None):
             os.system(f"./progressbarr.sh 0 '{title}'")
         
         nameImage = os.path.join((dirName or f"{getNameCap(name,cap)}"),f"{page.split('/')[-1]}")
-        print(page, nameImage)
+        print(page)
         try:
             download_image(page, nameImage)
             isdub= isDuplicate(nameImage,(dirName or f"{getNameCap(name,cap)}"))
@@ -165,7 +166,7 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
         pass
     except Exception as err:
         print(err)
-    i = start
+    i = 1
     for cap in caps:
 
         if cap not in exclude:
@@ -195,7 +196,13 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
     #os.system('clear')
     print(f'finish {name}')
 
+with open('./log','a+') as log:
+    log.write(f'{datetime.now()}: START {mangaName} cap-{mangaStartPage} to cap-{mangaStartPage} and {especials} EXCLUDING {exclude}\n')
+
 
 download_manga(mangaName, mangaEndPage, mangaStartPage,
               mangaDirName,  especials, exclude)
 
+
+with open('./log','a+') as log:
+    log.write(f'{datetime.now()} END {mangaName}\n')

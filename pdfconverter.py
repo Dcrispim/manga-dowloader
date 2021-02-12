@@ -88,14 +88,20 @@ def convertFolder(folder: str, manganame=None, namecap=None):
 
 def isDuplicate(imgPath:str, folder:str, trashhold=5, limit=7):
     img1 = cv2.imread(imgPath)
-    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    try:
+        img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    except:
+        pass
     imgs = os.listdir(folder)
     imgs.sort()
     for imgName in imgs[:limit] :
         if imgPath!=os.path.join(folder,imgName):
             try:
                 img2 = cv2.imread(os.path.join(folder, imgName))
-                img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+                try:
+                    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+                except:
+                    pass
                 err = mse(img1, img2)
                 if err<trashhold:
                     
