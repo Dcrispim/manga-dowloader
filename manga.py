@@ -139,7 +139,10 @@ def download_images(name, cap, dirName=None, title='', percent=None):
         except Exception as err:
             print(err)
             break
-        
+        finally:
+            if int(os.path.getsize(nameImage))<10:
+                print(nameImage)
+                os.remove(nameImage)
 
 
 def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
