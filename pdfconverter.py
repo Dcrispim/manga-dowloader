@@ -1,8 +1,22 @@
 import os
 import cv2
 
+import numpy as np
+
 KINDLE_W_CONST = 1072
 KINDLE_H_CONST = 1448
+
+
+def mse(imageA, imageB):
+	# the 'Mean Squared Error' between the two images is the
+	# sum of the squared difference between the two images;
+	# NOTE: the two images must have the same dimension
+	err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+	err /= float(imageA.shape[0] * imageA.shape[1])
+	
+	# return the MSE, the lower the error, the more "similar"
+	# the two images are
+	return err
 
 
 def fit_image(path: str):
@@ -68,9 +82,29 @@ def convertFolder(folder: str, manganame=None, namecap=None):
 
     convert_cmd = f'''convert {folder}/*.jpg "{os.path.join(root,manga_name,name_cap)}"'''
     os.system(convert_cmd)
+
     print(f'''create file {namecap or folder.split('/')[-1] }''')
 
 
+def isDuplicate(imgPath:str, folder:str, trashhold=5, limit=7):
+    img1 = cv2.imread(imgPath)
+    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    imgs = os.listdir(folder)
+    imgs.sort()
+    for imgName in imgs[:limit] :
+        if imgPath!=os.path.join(folder,imgName):
+            try:
+                img2 = cv2.imread(os.path.join(folder, imgName))
+                img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+                err = mse(img1, img2)
+                if err<trashhold:
+                    
+                    return True
+            except:
+                pass
+
+
 if __name__ == "__main__":
-    args = os.sys.argv[1:]
-    convertFolder(*args)
+    img1 = './04.jpg'
+    imgDir = '/home/intelie/Documents/mangas/ajin/jpgs/ajin_cap0001/'
+    print(isDuplicate(img1, imgDir))

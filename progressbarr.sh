@@ -7,6 +7,5 @@ prog() {
     # print those dots on a fixed-width space plus the percentage etc. 
     printf "\r\e[K|%-*s| %3d %% %s" "$w" "$dots" "$p" "$*"; 
 }
-clear
 prog "$1" "$2"...;
 echo "";

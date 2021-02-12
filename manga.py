@@ -1,8 +1,9 @@
 import os
-from pdfconverter import convertFolder, fit_images_by_folder, fix_images_by_folder
+from pdfconverter import convertFolder, fit_images_by_folder, fix_images_by_folder, isDuplicate
 import cv2
 import getpass
 from time import sleep
+import requests
 
 args = os.sys.argv[1:]
 
@@ -22,6 +23,7 @@ cleanCap = False
 global status
 
 status = ''
+
 
 
 for arg in args:
@@ -86,10 +88,24 @@ def log_bar(value, min=0, max=100, lenBar=100, msg='', emptyChar='-', fullChar='
         lenFull = int((value/(max-min))*lenBar)
     except ZeroDivisionError:
         lenFull = int((value/(max))*lenBar)
-    os.system('clear')
+    #os.system('clear')
     fullBar = ''.join([fullChar for i in range(0, lenFull+1)])
     emptyBar = ''.join([emptyChar for i in range(0, lenBar-lenFull+1)])
     return f"{msg}\n\n{fullBar}{emptyBar}"
+
+def download_image(pic_url, name):
+    with open(name, 'wb') as handle:
+        response = requests.get(pic_url, stream=True)
+
+        if not response.ok:
+            print(response)
+            raise Exception(response.status_code, pic_url)
+
+        for block in response.iter_content(1024):
+            if not block:
+                break
+            handle.write(block)
+
 
 
 def download_images(name, cap, dirName=None, title='', percent=None):
@@ -104,15 +120,25 @@ def download_images(name, cap, dirName=None, title='', percent=None):
 
     cmds = []
     for page in pages_link:
-
-        cmd = 'clear'
+        os.system('clear')
         if percent:
-            cmd += f" && {os.path.join(os.path.dirname(os.path.abspath(__file__)),'progressbarr.sh')} {int(percent*100)} '{title}'"
+            os.system(
+                f"{os.path.join(os.path.dirname(os.path.abspath(__file__)),'progressbarr.sh')} {int(percent*100)} '{title}'")
         else:
-            cmd += f" && ./progressbarr.sh 0 '{title}'"
-        cmd += f' && wget {page} -P {dirName or f"{getNameCap(name,cap)}"}'
-        cmds.append(cmd)
-    os.system('&&'.join(cmds))
+            os.system(f"./progressbarr.sh 0 '{title}'")
+        
+        nameImage = os.path.join((dirName or f"{getNameCap(name,cap)}"),f"{page.split('/')[-1]}")
+        print(page, nameImage)
+        try:
+            download_image(page, nameImage)
+            isdub= isDuplicate(nameImage,(dirName or f"{getNameCap(name,cap)}"))
+            if isdub:
+                print(isdub)
+                break
+        except Exception as err:
+            print(err)
+            break
+        
 
 
 def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
@@ -123,12 +149,22 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
     caps = [str(cap) for cap in range(int(start or '1'), int(end)+1)]
     caps.extend([str(c) for c in especials])
     caps.sort(key=sortNumberString)
-    manganame = f'{dirname or BASE_DIR}/{name}'
+    manganame = os.path.join(dirname or BASE_DIR, name)
     try:
-        if dirname == None:
-            os.mkdir(f'{manganame}/jpgs')
-    except:
+        os.mkdir(os.path.join(manganame))
+    except FileExistsError:
+        print('ss')
         pass
+    except Exception as err:
+        print(err)
+
+    try:
+        os.mkdir(os.path.join(manganame, 'jpgs'))
+    except FileExistsError:
+        print('ss')
+        pass
+    except Exception as err:
+        print(err)
     i = start
     for cap in caps:
 
@@ -139,30 +175,27 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
                                 for c in dirnamecapname.split('/')[-1].split('-')])
             dirJPGcapname = os.path.join(
                 manganame, 'jpgs', namecap.replace(' ', '_').lower())
-            try:
-                os.mkdir(os.path.join(manganame, 'jpgs'))
-            except FileExistsError:
-                pass
-            except Exception as err:
-                print(err)
+            
 
             try:
                 os.mkdir(dirJPGcapname)
             except FileExistsError:
+                print(dirJPGcapname)
                 pass
             except Exception as err:
                 print(err)
+
             download_images(name, cap, dirJPGcapname, namecap,
                             i/(len(caps)-len(exclude)))
             fix_images_by_folder(dirJPGcapname)
             fit_images_by_folder(dirJPGcapname)
-            sleep(2)
             convertFolder(dirJPGcapname, manganame, namecap)
             print(dirJPGcapname, '\n')
         i += 1
-    os.system('clear')
+    #os.system('clear')
     print(f'finish {name}')
 
 
 download_manga(mangaName, mangaEndPage, mangaStartPage,
-               mangaDirName,  especials, exclude)
+              mangaDirName,  especials, exclude)
+
