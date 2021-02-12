@@ -113,5 +113,5 @@ def isDuplicate(imgPath:str, folder:str, trashhold=5, limit=7):
 if __name__ == "__main__":
     img1 = './52.jpg'
     imgDir = '/home/intelie/Documents/mangas/ajin/jpgs/ajin_cap0001/'
-    args = os.sys.argv[:1]
+    args = os.sys.argv[1:]
     convertFolder(*args)
