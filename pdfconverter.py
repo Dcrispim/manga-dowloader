@@ -1,26 +1,26 @@
+from consts import BASE_DIR, KINDLE_H_CONST, KINDLE_W_CONST, TEMP_DIR
 import os
+from utils import cap_words, createFolderIfNotExists, getParentDir
+from pathdir import PathDir, PathFile
 import cv2
-
+import zipfile
 import numpy as np
-
-KINDLE_W_CONST = 1072
-KINDLE_H_CONST = 1448
 
 
 def mse(imageA, imageB):
-	# the 'Mean Squared Error' between the two images is the
-	# sum of the squared difference between the two images;
-	# NOTE: the two images must have the same dimension
-	err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
-	err /= float(imageA.shape[0] * imageA.shape[1])
-	
-	# return the MSE, the lower the error, the more "similar"
-	# the two images are
-	return err
+    # the 'Mean Squared Error' between the two images is the
+    # sum of the squared difference between the two images;
+    # NOTE: the two images must have the same dimension
+    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
+    err /= float(imageA.shape[0] * imageA.shape[1])
+
+    # return the MSE, the lower the error, the more "similar"
+    # the two images are
+    return err
 
 
 def fit_image(path: str):
-    img = cv2.imread(os.path.join(path))
+    img = cv2.imread(str(path))
     try:
         ratio = KINDLE_W_CONST/img.shape[1]
         width = int(KINDLE_W_CONST*ratio)
@@ -34,7 +34,7 @@ def fit_image(path: str):
 
 
 def fix_image(path):
-    img = cv2.imread(os.path.join(path))
+    img = cv2.imread(str(path))
 
     try:
         dimentions = img.shape
@@ -49,69 +49,72 @@ def fix_image(path):
 
 
 def fix_images_by_folder(folder):
-    img_paths = os.listdir(folder)
-    for imgPath in img_paths:
-        if os.path.isfile(os.path.join(folder, imgPath)):
+    img_paths = PathDir(folder).listdir
+    for imgFile in img_paths:
+        if imgFile.isfile:
             try:
-                fix_image(os.path.join(folder, imgPath))
+                fix_image(imgFile)
             except Exception as err:
-                print('FIX ALL IMAGEs ERROR: ', os.path.join(
-                    folder, imgPath), '\n', err)
+                print('FIX ALL IMAGEs ERROR: ', imgFile.name, '\n', err)
+
 
 def fit_images_by_folder(folder):
-    img_paths = os.listdir(folder)
-    for imgPath in img_paths:
-        if os.path.isfile(os.path.join(folder, imgPath)):
+    img_paths = PathDir(folder).listdir
+    for imgFile in img_paths:
+        if imgFile.isfile:
             try:
-                fit_image(os.path.join(folder, imgPath))
+                fit_image(imgFile)
             except Exception as err:
-                print('FIT ALL IMAGEs ERROR: ', os.path.join(
-                    folder, imgPath), '\n', err)
-
+                print('FIT ALL IMAGEs ERROR: ', imgFile, '\n', err)
 
 
 def convertFolder(folder: str, manganame=None, namecap=None):
-    os.system(
-        f'''echo "making PDF of cap {namecap or folder.split('/')[-1]}"''')
-    manga_name = f"{manganame or folder.split('/')[-2]}"
-    name_cap = f"{namecap or folder.split('/')[-1]}.pdf"
-    root = os.path.join(*folder.split('/')[:-2])
-    
-    if folder[0] =='/':
-        root = '/'+root
 
-    convert_cmd = f'''convert {folder}/*.jpg "{os.path.join(root,manga_name,name_cap)}"'''
+    folder_dir = PathDir(folder)
+    os.system(
+        f'''echo "making PDF of cap {namecap or folder_dir.basename}"''')
+    manga_name = PathDir(manganame or folder_dir.parent.parent.basename)
+    name_cap = PathFile(namecap or folder_dir.parent.basename).addExt('pdf')
+    root = folder_dir.parent.parent.parent
+    createFolderIfNotExists(root.join(manga_name))
+    convert_cmd = f'''convert {folder}/*.jpg "{root.join(manga_name,name_cap)}"'''
+    #input(convert_cmd)
     os.system(convert_cmd)
 
-    print(f'''create file {namecap or folder.split('/')[-1] }''')
+    print(f'''create file {root.join(manga_name,name_cap)}''')
 
 
-def isDuplicate(imgPath:str, folder:str, trashhold=5, limit=7):
-    img1 = cv2.imread(imgPath)
+def isDuplicate(imgPath: str, folder: str, trashhold=5, limit=7):
+    img1 = cv2.imread(str(imgPath))
     try:
         img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
     except:
         pass
-    imgs = os.listdir(folder)
+    imgs = os.listdir(str(folder))
     imgs.sort()
-    for imgName in imgs[:limit] :
-        if imgPath!=os.path.join(folder,imgName):
+    for imgName in imgs[:limit]:
+        if imgPath != PathFile(folder, imgName):
             try:
-                img2 = cv2.imread(os.path.join(folder, imgName))
+                img2 = cv2.imread(PathFile(folder, imgName).abs)
                 try:
                     img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
                 except:
                     pass
                 err = mse(img1, img2)
-                if err<trashhold:
-                    
+                if err < trashhold:
+
                     return True
             except:
                 pass
 
 
+def acessFolder(file_path):
+    with zipfile.ZipFile(file_path, 'r') as zip:
+        file = PathFile(file_path)
+        zip.extractall(BASE_DIR.join('.temp', file.name).abs)
+
+        return BASE_DIR.join('.temp', file.name)
+
+
 if __name__ == "__main__":
-    img1 = './52.jpg'
-    imgDir = '/home/intelie/Documents/mangas/ajin/jpgs/ajin_cap0001/'
-    args = os.sys.argv[1:]
-    convertFolder(*args)
+    pass
