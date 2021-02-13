@@ -1,4 +1,5 @@
 import os
+from utils import createFolderIfNotExists
 from pdfconverter import convertFolder, fit_images_by_folder, fix_images_by_folder, isDuplicate
 import cv2
 import getpass
@@ -54,12 +55,9 @@ for arg in args:
 
     if '--cleancap' in arg:
         cleanCap = True
-try:
-    os.mkdir(BASE_DIR)
 
-except:
-    pass
-
+createFolderIfNotExists(BASE_DIR)
+createFolderIfNotExists(BASE_DIR, '.temp')
 
 def get_manga_images_link(name: str, cap: int, endPage: int, startPage=1):
     decimal = ''
@@ -112,12 +110,8 @@ def download_image(pic_url, name):
 def download_images(name, cap, dirName=None, title='', percent=None):
     pages_link = get_manga_images_link(name, cap, 100)
 
-    try:
-        if dirName == None:
-            os.mkdir(getNameCap(name, cap))
-
-    except:
-        pass
+    if dirName == None:
+        createFolderIfNotExists(getNameCap(name, cap))
 
     cmds = []
     for page in pages_link:
@@ -154,21 +148,10 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
     caps.extend([str(c) for c in especials])
     caps.sort(key=sortNumberString)
     manganame = os.path.join(dirname or BASE_DIR, name)
-    try:
-        os.mkdir(os.path.join(manganame))
-    except FileExistsError:
-        print('ss')
-        pass
-    except Exception as err:
-        print(err)
 
-    try:
-        os.mkdir(os.path.join(manganame, 'jpgs'))
-    except FileExistsError:
-        print('ss')
-        pass
-    except Exception as err:
-        print(err)
+    createFolderIfNotExists(manganame)
+    createFolderIfNotExists(os.path.join(manganame, 'jpgs'))
+
     i = 1
     for cap in caps:
 
@@ -180,14 +163,7 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
             dirJPGcapname = os.path.join(
                 manganame, 'jpgs', namecap.replace(' ', '_').lower())
             
-
-            try:
-                os.mkdir(dirJPGcapname)
-            except FileExistsError:
-                print(dirJPGcapname)
-                pass
-            except Exception as err:
-                print(err)
+            createFolderIfNotExists(dirJPGcapname)
 
             download_images(name, cap, dirJPGcapname, namecap,
                             i/(len(caps)-len(exclude)))
