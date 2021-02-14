@@ -1,6 +1,6 @@
 from consts import BASE_DIR, KINDLE_H_CONST, KINDLE_W_CONST, TEMP_DIR
 import os
-from utils import cap_words, createFolderIfNotExists, getParentDir
+from utils import createFolderIfNotExists
 from pathdir import PathDir, PathFile
 import cv2
 import zipfile
