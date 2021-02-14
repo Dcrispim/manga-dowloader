@@ -131,24 +131,29 @@ def download_images(name, cap, dirName=None, title='', percent=None):
             isdub = isDuplicate(
                 nameImage, (dirName or f"{getNameCap(name,cap)}"))
             if isdub:
-                print(isdub)
                 break
         except Exception as err:
 
             print(err, 'line 138')
             break
         finally:
-            if nameImage.size < 10:
+            if nameImage.size < 10 or isdub:
                 print(nameImage)
                 os.remove(nameImage.abs)
 
 
-def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
+def download_manga(name, end=None, start=1, dirname=None, especials=[], exclude=[]):
 
     def sortNumberString(key: str):
         return float(key.replace('-', '.').replace(',', '.'))
 
-    caps = [str(cap) for cap in range(int(start or '1'), int(end)+1)]
+    if end:
+        try:
+            caps = [str(cap) for cap in range(int(start or '1'), int(end)+1)]
+        except:
+            caps=[]
+    else:
+        caps = []
     caps.extend([str(c) for c in especials])
     caps.sort(key=sortNumberString)
 

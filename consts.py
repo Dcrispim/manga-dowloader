@@ -1,6 +1,6 @@
 import json
 import getpass
-from utils import PathDir
+from pathdir import PathDir
 import os
 
 ROOT_PATH = PathDir(os.path.join(os.path.dirname(os.path.abspath(__file__))))

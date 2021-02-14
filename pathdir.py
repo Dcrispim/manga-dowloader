@@ -63,6 +63,9 @@ class PathDir:
 
     def __eq__(self, b):
         return self.abs == PathDir(b).abs
+    
+    def __lt__(self, b):
+        return self.abs < PathDir(b).abs
 
 
 class PathFile(PathDir):
