@@ -12,6 +12,6 @@ BASE_DIR = PathDir(
 BASE_URL = PathDir(CONFIGS["base-url"])
 TEMP_DIR = PathDir(CONFIGS["temp-dir"])
 
-KINDLE_W_CONST = 1072
-KINDLE_H_CONST = 1448
+KINDLE_W_CONST = CONFIGS['width']
+KINDLE_H_CONST = CONFIGS['height']
 

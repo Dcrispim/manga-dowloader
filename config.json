@@ -1,5 +1,7 @@
 {
     "base-dir":"$HOME/Documents/mangas",
     "temp-dir":"$HOME/Documents/mangas/.temp",
-    "base-url":"https://cdn.mangayabu.top/mangas"
+    "base-url":"https://cdn.mangayabu.top/mangas",
+    "width":1072,
+    "height":1488
 }
