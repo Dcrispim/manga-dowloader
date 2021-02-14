@@ -32,7 +32,7 @@ class PathDir:
     def listdir(self):
         if self.isdir:
 
-            return [PathDir(self.folder, f) if PathDir(self.folder, f).isdir else PathFile(f) for f in os.listdir(self.abs)]
+            return [PathDir(self.folder, f) if PathDir(self.folder, f).isdir else PathFile(self.folder,f) for f in os.listdir(self.abs)]
         else:
             return []
 

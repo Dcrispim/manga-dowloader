@@ -19,21 +19,25 @@ def mse(imageA, imageB):
     return err
 
 
-def fit_image(path: str):
+def fit_image(path: PathFile):
     img = cv2.imread(str(path))
+
     try:
+
         ratio = KINDLE_W_CONST/img.shape[1]
+
         width = int(KINDLE_W_CONST*ratio)
         height = int(KINDLE_H_CONST*ratio)
         dim = (width, height)
         img_fit = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
-        cv2.imwrite(path, img_fit)
+        cv2.imwrite(path.abs, img_fit)
     except Exception as err:
+
         print('FIT IMAGE ERROR: ', path, '\n', err)
         pass
 
 
-def fix_image(path):
+def fix_image(path: PathFile):
     img = cv2.imread(str(path))
 
     try:
@@ -41,7 +45,7 @@ def fix_image(path):
 
         if(dimentions[0] < dimentions[1]):
             img_rotate_90_clockwise = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
-            cv2.imwrite(path, img_rotate_90_clockwise)
+            cv2.imwrite(path.abs, img_rotate_90_clockwise)
     except Exception as err:
 
         print('FIX IMAGE ERROR: ', path, '\n', err)
@@ -60,9 +64,13 @@ def fix_images_by_folder(folder):
 
 def fit_images_by_folder(folder):
     img_paths = PathDir(folder).listdir
+
     for imgFile in img_paths:
+
         if imgFile.isfile:
+
             try:
+
                 fit_image(imgFile)
             except Exception as err:
                 print('FIT ALL IMAGEs ERROR: ', imgFile, '\n', err)
@@ -78,7 +86,6 @@ def convertFolder(folder: str, manganame=None, namecap=None):
     root = folder_dir.parent.parent.parent
     createFolderIfNotExists(root.join(manga_name))
     convert_cmd = f'''convert {folder}/*.jpg "{root.join(manga_name,name_cap)}"'''
-    #input(convert_cmd)
     os.system(convert_cmd)
 
     print(f'''create file {root.join(manga_name,name_cap)}''')
@@ -117,4 +124,5 @@ def acessFolder(file_path):
 
 
 if __name__ == "__main__":
-    pass
+    fit_images_by_folder(
+        '/home/intelie/Documents/mangas/ajin/jpgs/ajin_cap0001')

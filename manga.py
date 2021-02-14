@@ -172,8 +172,8 @@ def download_manga(name, end, start=1, dirname=None, especials=[], exclude=[]):
             createFolderIfNotExists(dirJPGcapname)
 
             download_images(name, cap, dirJPGcapname.abs, namecap,i/(len(caps)-len(exclude)))
-            fix_images_by_folder(dirJPGcapname)
-            fit_images_by_folder(dirJPGcapname)
+            fix_images_by_folder(dirJPGcapname.abs)
+            fit_images_by_folder(dirJPGcapname.abs)
             convertFolder(dirJPGcapname, manganame, namecap)
             print(dirJPGcapname, '\n')
         i += 1
