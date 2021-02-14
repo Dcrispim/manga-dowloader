@@ -85,6 +85,8 @@ def convertFolder(folder: str, manganame=None, namecap=None):
     name_cap = PathFile(namecap or folder_dir.parent.basename).addExt('pdf')
     root = folder_dir.parent.parent.parent
     createFolderIfNotExists(root.join(manga_name))
+    fix_images_by_folder(folder)
+    fit_images_by_folder(folder)
     convert_cmd = f'''convert {folder}/*.jpg "{root.join(manga_name,name_cap)}"'''
     os.system(convert_cmd)
 
