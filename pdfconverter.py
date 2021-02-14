@@ -116,7 +116,7 @@ def isDuplicate(imgPath: str, folder: str, trashhold=5, limit=7):
 
 
 def acessFolder(file_path):
-    with zipfile.ZipFile(file_path, 'r') as zip:
+    with zipfile.ZipFile(str(file_path), 'r') as zip:
         file = PathFile(file_path)
         zip.extractall(BASE_DIR.join('.temp', file.name).abs)
 
