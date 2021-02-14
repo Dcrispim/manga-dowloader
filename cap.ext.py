@@ -1,16 +1,18 @@
 from consts import BASE_DIR
 import os
 from pathdir import PathDir
-from utils import cap_words
+from utils import cap_words, extension
 from pdfconverter import acessFolder, convertFolder
 
-
-if __name__ == "__main__":
-    args = os.sys.argv[1:]
-    name = PathDir(args[1].replace(' ','-').lower())
-    manganame = name.basename.split('_')[0].strip('-').lower()
-    caps = [PathDir(f'{name}_cap{cp:0>4}') for cp in args[2:]]
+@extension
+def convertCap(*args):
+    print(args)
+    name = PathDir(str(args[0]).replace(' ','-').lower())
+    caps = [PathDir(f'{name}_cap{cp:0>4}') for cp in args[1]]
     for cap in caps:
         folder = PathDir(BASE_DIR,name,'jpgs',cap)
         convertFolder(folder, name, cap_words(cap.abs.replace('_', ' ')))
+
+if __name__ == "__main__":
+   convertCap
 
