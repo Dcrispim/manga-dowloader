@@ -102,19 +102,25 @@ def isDuplicate(imgPath: str, folder: str, trashhold=5, limit=7):
     imgs = os.listdir(str(folder))
     imgs.sort()
     for imgName in imgs[:limit]:
-        if imgPath != PathFile(folder, imgName):
+        if str(imgPath) != PathFile(folder, imgName).abs:
             try:
                 img2 = cv2.imread(PathFile(folder, imgName).abs)
                 try:
                     img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
                 except:
                     pass
-                err = mse(img1, img2)
+                width = int(img1.shape[1])
+                height = int(img1.shape[0])
+                dim = (width, height)
+                img_fit = cv2.resize(img2, dim, interpolation=cv2.INTER_AREA)
+                err = mse(img1, img_fit)
                 if err < trashhold:
-
                     return True
-            except:
+            except Exception as err:
+                print(err)
                 pass
+    return False
+                
 
 
 def acessFolder(file_path):
