@@ -43,8 +43,8 @@ def removeDups(*args):
         for img in cap_imgs:
             os.system('clear')
             print(f'Checking {folder.parent.basename} cap {cap.basename}')
-            progress((j/len(caps)), cap.basename)
-            progress(i/len(cap_imgs), img.basename)
+            progress((j/(len(caps)-1)), cap.basename)
+            progress(i/(len(cap_imgs)-1), img.basename)
             isdub = isDuplicate(img.abs, cap.abs, limit=len(cap_imgs))
             if(isdub):
                 print(f'Removing {img.basename}')
