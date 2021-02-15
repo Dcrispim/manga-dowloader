@@ -1,7 +1,7 @@
 from consts import BASE_DIR
-import os
+from decorators import extension
 from pathdir import PathDir
-from utils import cap_words, extension
+from utils import cap_words
 from pdfconverter import acessFolder, convertFolder
 
 @extension

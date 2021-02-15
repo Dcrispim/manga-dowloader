@@ -1,5 +1,6 @@
 from pathdir import PathDir
-from utils import cap_words, extension
+from decorators import extension
+from utils import cap_words
 from pdfconverter import acessFolder, convertFolder
 
 @extension
