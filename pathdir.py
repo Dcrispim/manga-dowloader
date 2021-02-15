@@ -45,11 +45,18 @@ class PathDir:
     def join(self, *folders):
         return PathDir(os.path.join(self.__str__(), *[str(p) for p in folders]))
 
+    def tryremove(self):
+        try:
+            os.remove(self.abs)
+        except Exception as err:
+            print(f'Can not REMOVE {self.abs}: {err}')
+
     def __repr__(self):
         return self.__abs__()
 
     def __str__(self):
         return self.__repr__()
+
 
     @property
     def abs(self):
