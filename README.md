@@ -78,7 +78,7 @@ Documents
 ```
 ou
 ```shell
-./run magi-sinbad-no-bouken 182 --start=0 --especials=///home/user/Documente=s/esp.txt
+./run magi-sinbad-no-bouken 182 --start=0 --especials=///home/user/Documents/esp.txt
 ```
 
 esp.txt
