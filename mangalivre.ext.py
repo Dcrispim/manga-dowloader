@@ -10,5 +10,5 @@ def convertZip(*args):
     convertFolder(ZIP.open('content'), ZIP.parent.parent.join(manganame), cap)
 
 if __name__ == "__main__":
-    convertZip
+    convertZip()
 

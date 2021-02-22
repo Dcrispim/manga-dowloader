@@ -31,4 +31,4 @@ def convertEmptys(*args):
 
 
 if __name__ == "__main__":
-    convertEmptys
+    convertEmptys()

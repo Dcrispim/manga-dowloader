@@ -14,5 +14,5 @@ def convertCap(*args):
         convertFolder(folder, name, cap_words(cap.abs.replace('_', ' ')))
 
 if __name__ == "__main__":
-   convertCap
+   convertCap()
 

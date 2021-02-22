@@ -11,4 +11,4 @@ def convertMain(*args):
     convertFolder(folder, folder.parent.parent, cap)
     
 if __name__ == "__main__":
-   convertMain
+   convertMain()

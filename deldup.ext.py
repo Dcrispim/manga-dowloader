@@ -59,4 +59,4 @@ def removeDups(*args):
 
 
 if __name__ == "__main__":
-    removeDups
+    removeDups()
