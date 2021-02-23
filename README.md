@@ -80,7 +80,7 @@ Documents
 * __custom-start-chapter__: chapter number if is diferent of 1
 * __especial-chapters__: chapters splited with "__/__" ex: 28.5/80.7/90-2 
     * or a file path starting  with "__//__" ex: __//___/home/user/documents/esp.tsx_
-* __exclude-chapters__: chapters splited with "__/__" ex: 28.5/80.7/90-2 
+* __exclude-chapters__: chapters splited with "__/__" ex: 28/80/90 
 
 
 `./run` `<manga-name>` `<end-chapter>` `--start=<custom-start-chapter>` `--especials=<especial-chapters>` `--exclude=<exclude-chapters>`
