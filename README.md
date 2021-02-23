@@ -4,7 +4,19 @@ This a application to create PDF files from mangas images.
 
 ## API
 
-### 1.1 Download a specifc manga
+### Install Deps and update
+
+```
+./install
+```
+
+
+Makes pull from repository
+```
+./update
+```
+
+### 1.2 Download a specifc manga
 
 The main function of aplications is the `download_manga()` from __manga.py__ module. This functions:
 
@@ -86,7 +98,7 @@ esp.txt
 70.5/51.5/43.5
 ```
 
-### 1.2 Extensions
+### 1.3 Extensions
 
 You can make extensions with decorator @extension. The functions are given * args and normally args [0] is the name of the manga. but this can be changed if necessary
 
