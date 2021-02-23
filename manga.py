@@ -186,13 +186,11 @@ def download_manga(name, end=None, start=1, dirname=None, especials=[], exclude=
     print(f'finish {name}')
 
 
-with open('./log', 'a+') as log:
-    log.write(f'{datetime.now()}: START {mangaName} cap-{mangaStartPage} to cap-{mangaStartPage} and {especials} EXCLUDING {exclude}\n')
 
-
-download_manga(mangaName, mangaEndPage, mangaStartPage,
-               mangaDirName,  especials, exclude)
-
-
-with open('./log', 'a+') as log:
-    log.write(f'{datetime.now()} END {mangaName}\n')
+if __name__ == "__main__":
+    with open('./log', 'a+') as log:
+        log.write(f'{datetime.now()}: START {mangaName} cap-{mangaStartPage} to cap-{mangaStartPage} and {especials} EXCLUDING {exclude}\n')
+    download_manga(mangaName, mangaEndPage, mangaStartPage,
+                mangaDirName,  especials, exclude)
+    with open('./log', 'a+') as log:
+        log.write(f'{datetime.now()} END {mangaName}\n')
